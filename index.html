@@ -2588,83 +2588,15 @@ document.addEventListener('DOMContentLoaded', () => {
 (function registerSW() {
   if (!('serviceWorker' in navigator)) return;
 
-  const CACHE = 'additive-analyzer-v1';
-  const URLS  = [
-    location.href,                                                  // the app itself
-    'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js',
-    'https://unpkg.com/tesseract.js-core@5/tesseract-core-simd.wasm',
-    'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap',
-  ];
-
-  const swCode = `
-const CACHE = '${CACHE}';
-const URLS  = ${JSON.stringify(URLS)};
-
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => {
-      // Cache what we can; ignore failures (e.g. opaque WASM)
-      return Promise.allSettled(URLS.map(url =>
-        c.add(url).catch(() => null)
-      ));
-    }).then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', e => {
-  // Network-first for Tesseract language data (large, versioned)
-  // Cache-first for everything else
-  const isTesseractLang = e.request.url.includes('tessdata') ||
-                          e.request.url.includes('traineddata');
-  if (isTesseractLang) {
-    e.respondWith(
-      fetch(e.request).then(r => {
-        if (r && r.status === 200) {
-          const clone = r.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
-        return r;
-      }).catch(() => caches.match(e.request))
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(r => {
-          if (r && r.status === 200 && r.type !== 'opaque') {
-            const clone = r.clone();
-            caches.open(CACHE).then(c => c.put(e.request, clone));
-          }
-          return r;
-        }).catch(() => cached);
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => {
+        console.log('[SW] Registered successfully, scope:', reg.scope);
       })
-    );
-  }
-});
-  `.trim();
-
-  const blob = new Blob([swCode], { type: 'application/javascript' });
-  const swUrl = URL.createObjectURL(blob);
-
-  navigator.serviceWorker.register(swUrl, { scope: '/' })
-    .then(reg => {
-      console.log('[SW] Registered, scope:', reg.scope);
-      // Revoke blob URL after registration (it's held by the browser now)
-      setTimeout(() => URL.revokeObjectURL(swUrl), 5000);
-    })
-    .catch(err => {
-      // SW fails when page is served as file:// — that's fine,
-      // app still works, just without offline caching
-      console.log('[SW] Registration skipped:', err.message);
-    });
+      .catch(err => {
+        console.log('[SW] Registration skipped:', err.message);
+      });
+  });
 })();
 
 // ═══════════════════════════════════════════════════════
