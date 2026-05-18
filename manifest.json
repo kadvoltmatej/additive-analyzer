@@ -10,9 +10,15 @@
   "lang": "en",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3E%3Crect%20width='512'%20height='512'%20rx='80'%20fill='%230f1117'/%3E%3Ctext%20x='256'%20y='340'%20font-size='300'%20text-anchor='middle'%20fill='%234f8ef7'%3E%E2%9A%97%3C/text%3E%3C/svg%3E",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
