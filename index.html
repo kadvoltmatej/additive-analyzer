@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Additive Analyzer</title>
 
+<!-- ── PWA MANIFEST ── -->
 <link rel="manifest" href="manifest.json">
-
-<meta name="application-name" content="Additive Analyzer">
 
 <!-- ── PWA META ── -->
 <meta name="application-name" content="Additive Analyzer">
@@ -2573,10 +2572,8 @@ function copyText(text) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ═══════════════════════════════════════════════════════
-// PWA — SERVICE WORKER REGISTRATION
-// The SW is defined as an inline blob so no separate sw.js
-// file is needed. It caches ALL resources on first load so
-// the app works 100% offline from the second visit onward.
+// ═══════════════════════════════════════════════════════
+// PWA — SERVICE WORKER REGISTRATION (external sw.js)
 // ═══════════════════════════════════════════════════════
 // Apply default language (HR) on first load
 document.addEventListener('DOMContentLoaded', () => {
@@ -2587,16 +2584,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 (function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => {
-        console.log('[SW] Registered successfully, scope:', reg.scope);
-      })
-      .catch(err => {
-        console.log('[SW] Registration skipped:', err.message);
-      });
-  });
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => console.log('[SW] Registered, scope:', reg.scope))
+    .catch(err => console.log('[SW] Skipped:', err.message));
 })();
 
 // ═══════════════════════════════════════════════════════
