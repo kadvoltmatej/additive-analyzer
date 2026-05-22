@@ -1,13 +1,13 @@
 {
-  "name": "Additive Analyzer",
-  "short_name": "Additives",
+  "name": "AddiScan",
+  "short_name": "AddiScan",
   "description": "Offline food additive analyzer with OCR and E-code database",
   "start_url": "/additive-analyzer/",
   "scope": "/additive-analyzer/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f1117",
-  "theme_color": "#4f8ef7",
+  "theme_color": "#0f1117",
   "lang": "hr",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
